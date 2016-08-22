@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>List</title>
+	<style>
+	.compeleted{
+		text-decoration: line-through;
+		color: red;
+	}
+	</style>
+</head>
+<body>
+<div id="app">
+	<!-- 数据保存在tasks中,tasks赋值给list,template中用list渲染 -->
+	<task-app :list='tasks'>
+	</task-app>
+</div>
+<template id="task-template">
+	<h1 v-show="listLength">My Tasks ({{ listLength }})</h1>
+	<ul>
+	<!-- :class="task.compeleted?'compeleted':''" -->
+		<li 
+			@click="toggleTasks(task)" 
+			:class="task.compeleted?'compeleted':''" 
+			v-for="task in list"
+		>
+		{{ task.body }}
+		<strong @click="deleteTask(task)">X</strong>
+		</li>
+	</ul>
+</template>
+<script src="vue.js"></script>
+<script>
+	Vue.component('task-app',{
+		template: '#task-template',
+		props: ['list'],
+		methods:{
+			toggleTasks:function(task){
+				task.compeleted = !task.compeleted;
+			},
+			deleteTask:function(task){
+				this.list.$remove(task); 
+			}
+		},
+		computed: {
+			listLength:function(){
+				return this.list.filter(function(task){
+					return ! task.compeleted;
+				}).length
+			}
+		}
+	});
+	new Vue({
+		el:'#app',
+		data:{
+			tasks:[
+			{body:'go to the home',compeleted:false},
+			{body:'learn to vue',compeleted:true},
+			{body:'go back home',compeleted:false}
+			]
+		}
+		// methods:{
+		// 	toggleTasks:function(task){
+		// 		task.compeleted = !task.compeleted;
+		// 	}
+		// }
+	})
+</script>
+</body>
+</html>
